@@ -7,4 +7,4 @@ intr-un fisier de iesire. Programul poate primi ca argument doar fisierul de int
 va primi fisierul avand cuvintele criptate si permutarile folosite pentru criptare, caz in care va genera fisierul de output avand 
 cuvintele decriptate
 
-Voi alege o permutare , fiecare proces va avea de prelucrat o parte din fisier, aplicand acea permutare pe partea lui de fisier
+Voi alege o permutare, fiecare proces va avea de prelucrat o parte din fisier, aplicand acea permutare pe partea lui de fisier

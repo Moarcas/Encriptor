@@ -11,6 +11,9 @@
 #include <sys/mman.h>
 #include <errno.h>
 #include <string.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <stdlib.h>
 
 #include "../headers/pozitii.h"
 
@@ -22,6 +25,7 @@ int criptare(char **argv)
 
     // Deschid fisierul de intrare
 
+    const int dimensiune_pagina = getpagesize();
     int fd = open(argv[1], O_RDWR);
     struct stat sb;
 
@@ -31,22 +35,25 @@ int criptare(char **argv)
         return errno;
     }
 
-    // Mapez fisierul de intrare in memorie
+    off_t dimensiune_criptata = 0;
 
-    char *file_in_memory = mmap(NULL, sb.st_size, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
+    while(dimensiune_criptata + dimensiune_pagina <= sb.st_size)
+    {
+        pid_t pid = fork();
 
-    // Acum orice modificare fac in file_in_memory va aparea si in fisier
+        if(pid < 0)
+            return errno;
+        
+        if(pid == 0)
+        {
+            char* file_in_memory = mmap(NULL, dimensiune_pagina, PROT_READ|PROT_WRITE, MAP_SHARED, fd, dimensiune_criptata);
 
-    struct pereche pozitii[100000];
-    int numar_cuvinte = 0;
 
-    // Pentru fiecare cuvant din fisier determin pozitia la care incepe si pozitia la care se termina
+            exit(0);
+        }
 
-    determinarePozitiiCuvinte(pozitii, file_in_memory, &numar_cuvinte);
-
-    // Incep sa creez procesele
-
-    
+        dimensiune_criptata += dimensiune_pagina;
+    }
 
     return 0;    
 }

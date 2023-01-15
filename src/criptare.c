@@ -1,6 +1,7 @@
-#include <stdio.h>
-#include "../headers/criptare.h"
+#ifndef __A_H_INCLUDED__
+#define __A_H_INCLUDED__
 
+#include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -9,6 +10,11 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <errno.h>
+#include <string.h>
+
+#include "../headers/pereche.h"
+
+#endif
 
 int criptare(char **argv)
 {
@@ -30,6 +36,7 @@ int criptare(char **argv)
     char *file_in_memory = mmap(NULL, sb.st_size, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
 
     // Acum orice modificare fac in file_in_memory va aparea si in fisier
+
 
 
 

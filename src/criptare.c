@@ -12,7 +12,7 @@
 #include <errno.h>
 #include <string.h>
 
-#include "../headers/pereche.h"
+#include "../headers/pozitii.h"
 
 #endif
 
@@ -37,8 +37,16 @@ int criptare(char **argv)
 
     // Acum orice modificare fac in file_in_memory va aparea si in fisier
 
+    struct pereche pozitii[100000];
+    int numar_cuvinte = 0;
 
+    // Pentru fiecare cuvant din fisier determin pozitia la care incepe si pozitia la care se termina
 
+    determinarePozitiiCuvinte(pozitii, file_in_memory, &numar_cuvinte);
+
+    // Incep sa creez procesele
+
+    
 
     return 0;    
 }

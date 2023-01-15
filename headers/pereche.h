@@ -1,3 +1,4 @@
 struct pereche {
-    int pozitieStart, pozitieFinal;
+    int pozitieStart;
+    int lungimeCuvant;
 };

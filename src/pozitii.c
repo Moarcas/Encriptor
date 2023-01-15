@@ -8,7 +8,7 @@
 
 #endif
 
-void determinarePozitiiCuvinte(struct pereche pozitii[], char* file_in_memory)
+void determinarePozitiiCuvinte(struct pereche pozitii[], char* file_in_memory, int *numar_cuvinte)
 { 
     char copie[strlen(file_in_memory)];
 
@@ -16,15 +16,13 @@ void determinarePozitiiCuvinte(struct pereche pozitii[], char* file_in_memory)
 
     char *cuvant = strtok(copie, " ,.;!?\n");
 
-    int numar_cuvinte = 0;
-
     while(cuvant != NULL)
     {
-        pozitii[numar_cuvinte].pozitieStart = cuvant - copie;
-        pozitii[numar_cuvinte].pozitieFinal = pozitii[numar_cuvinte].pozitieStart + strlen(cuvant);
+        pozitii[*numar_cuvinte].pozitieStart = cuvant - copie;
+        pozitii[*numar_cuvinte].lungimeCuvant = strlen(cuvant);
+
+        (*numar_cuvinte)++;
 
         cuvant = strtok(NULL, " .,;!?\n");
     }
 }
-
-

@@ -1,1 +1,1 @@
-void criptare(char **argv);
+int criptare(char **argv);

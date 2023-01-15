@@ -8,7 +8,7 @@ BINDIR = bin
 BIN = $(BINDIR)/main
 
 all:$(BIN)
-	./bin/main
+	./bin/main date.txt 
 
 $(BIN): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $@

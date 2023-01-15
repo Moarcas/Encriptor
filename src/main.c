@@ -1,34 +1,31 @@
-//read
-#include <unistd.h>
+#ifndef __A_H_INCLUDED__
+#define __A_H_INCLUDED__
 
-// open
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-
-//printf
 #include <stdio.h>
+#include "../headers/criptare.h"
+#include "../headers/decriptare.h"
 
-//errno
-#include <errno.h>
-
-//stat
-#include <sys/stat.h>
-#include <sys/types.h>
-
-//mmap
-#include <sys/mman.h>
-
-#include <string.h>
-
-//shm_open
-#include <sys/mman.h>
-#include <sys/stat.h>        /* For mode constants */
-#include <fcntl.h>           /* For O_* constants */
-
+#endif
 
 int main(int argc, char *argv[]) 
 {
-    printf("Hello World!\n");
+    
+    if(argc == 2)
+    {
+        // Ciptare
+        criptare(argv);
+    }
+    else if(argc == 3)
+    {
+        // Drecriptare
+        decriptare(argv);
+    }
+    else
+    {
+        // Numarul argumentelor este gresit
+        printf("Programul primeste minim un argument si maxim doua argumente!");
+    }
+
+
     return 0;
 }

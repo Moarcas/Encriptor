@@ -18,32 +18,15 @@
 
 #endif
 
-void cripitareCuvant(char cuvant[], int lungime_cuvant, int *key)
+void cripitareCuvant(char cuvant[], int lungime_cuvant)
 {
     // Criptez cuvantul
 
-    char *cuvant_criptat = malloc((lungime_cuvant + 1) * sizeof(char));
-
-    for(int i = 0; i < lungime_cuvant; i++)
-    {
-        int index = key[i] % lungime_cuvant;
-        cuvant_criptat[i] = cuvant[index];
-    }
-
-    cuvant_criptat[lungime_cuvant] = '\0';
-    strcpy(cuvant, cuvant_criptat);
-    free(cuvant_criptat);
 }
 
 int criptare(char **argv)
 {
     printf("Sunt in sursa criptare!\n");
-
-    // Generez cheia (lungimea cheii trebuie sa fie mai mare decat lungimea oricarui cuvant din text)
-
-    int lungime_cheie = 10;
-    int key[100];
-    generarePermutare(key, lungime_cheie);
 
     // Deschid fisierul de intrare
 
@@ -91,7 +74,7 @@ int criptare(char **argv)
 
             cuvant[lungime_cuvant] = '\0';
 
-            cripitareCuvant(cuvant, lungime_cuvant, key);
+            cripitareCuvant(cuvant, lungime_cuvant);
 
             for(int i = 0; i < lungime_cuvant; i++)
                 file_in_memory[pozitie_start + i] = cuvant[i];

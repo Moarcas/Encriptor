@@ -22,17 +22,17 @@ void cripitareCuvant(char cuvant[], int lungime_cuvant, int *key)
 {
     // Criptez cuvantul
 
-    char *cuvant_criptat = malloc(lungime_cuvant * sizeof(char));
-    int index;
+    char *cuvant_criptat = malloc((lungime_cuvant + 1) * sizeof(char));
 
     for(int i = 0; i < lungime_cuvant; i++)
     {
-        index = key[i];
-        cuvant_criptat[index] = cuvant[i];
+        int index = key[i] % lungime_cuvant;
+        cuvant_criptat[i] = cuvant[index];
     }
 
+    cuvant_criptat[lungime_cuvant] = '\0';
     strcpy(cuvant, cuvant_criptat);
-    free(cuvant_criptat);    
+    free(cuvant_criptat);
 }
 
 int criptare(char **argv)
@@ -41,7 +41,7 @@ int criptare(char **argv)
 
     // Generez cheia (lungimea cheii trebuie sa fie mai mare decat lungimea oricarui cuvant din text)
 
-    int lungime_cheie;
+    int lungime_cheie = 10;
     int key[100];
     generarePermutare(key, lungime_cheie);
 

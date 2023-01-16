@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g -Wall
+CFLAGS = -g -Wall -lssl -lcrypto
 SRC = src
 OBJ = obj
 SRCS = $(wildcard $(SRC)/*.c)
@@ -11,7 +11,7 @@ all:$(BIN)
 	./bin/main date.txt 
 
 $(BIN): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $@
+	$(CC) $(OBJS) $(CFLAGS) -o $@
 
 $(OBJ)/%.o: $(SRC)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@

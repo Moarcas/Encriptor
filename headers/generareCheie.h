@@ -1,0 +1,1 @@
+void generarePermutare(int *key, int lungimeCuvant);

@@ -11,14 +11,39 @@
 #include <sys/mman.h>
 #include <errno.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "../headers/pozitii.h"
+#include "../headers/generareCheie.h"
 
 #endif
+
+void cripitareCuvant(char cuvant[], int lungime_cuvant, int *key)
+{
+    // Criptez cuvantul
+
+    char *cuvant_criptat = malloc(lungime_cuvant * sizeof(char));
+    int index;
+
+    for(int i = 0; i < lungime_cuvant; i++)
+    {
+        index = key[i];
+        cuvant_criptat[index] = cuvant[i];
+    }
+
+    strcpy(cuvant, cuvant_criptat);
+    free(cuvant_criptat);    
+}
 
 int criptare(char **argv)
 {
     printf("Sunt in sursa criptare!\n");
+
+    // Generez cheia (lungimea cheii trebuie sa fie mai mare decat lungimea oricarui cuvant din text)
+
+    int lungime_cheie;
+    int key[100];
+    generarePermutare(key, lungime_cheie);
 
     // Deschid fisierul de intrare
 
@@ -46,6 +71,37 @@ int criptare(char **argv)
 
     // Incep sa creez procesele
 
+
+    for(int nr_cuv = 0; nr_cuv < numar_cuvinte; nr_cuv++)
+    {
+        pid_t pid = fork();
+
+        if(pid < 0)
+            return 0;
+        
+        if(pid == 0)
+        {
+            int pozitie_start = pozitii[nr_cuv].pozitieStart;
+            int lungime_cuvant = pozitii[nr_cuv].lungimeCuvant;
+
+            char cuvant[lungime_cuvant + 1];
+
+            for(int i = 0; i < lungime_cuvant; i++)
+                cuvant[i] = file_in_memory[pozitie_start + i];
+
+            cuvant[lungime_cuvant] = '\0';
+
+            cripitareCuvant(cuvant, lungime_cuvant, key);
+
+            for(int i = 0; i < lungime_cuvant; i++)
+                file_in_memory[pozitie_start + i] = cuvant[i];
+            
+            exit(0);
+        }
+
+    }
+
+    munmap(file_in_memory, sb.st_size);
     
 
     return 0;    

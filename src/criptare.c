@@ -24,7 +24,8 @@
 // Aceasta functie cripeaza doar un singur cuvant
 void cripitareCuvant(char cuvant[])
 {
-    
+    // aici fac permutarea
+
 }
 
 // Aceasta functie cripiteaza doar o parte din fisier, de dimensiunea paginii
@@ -110,7 +111,7 @@ int criptare(char **argv)
         {
             char *file_in_memory = mmap(NULL, sb.st_size - dimensiune_criptata, PROT_READ|PROT_WRITE, MAP_SHARED, fd, dimensiune_criptata);
 
-            criptarePartiala(file_in_memory);
+            criptarePartiala(file_in_memory);           
 
             munmap(file_in_memory, sb.st_size - dimensiune_criptata);
             exit(0);
@@ -119,6 +120,8 @@ int criptare(char **argv)
 
     for(int i = 0; i < nr_procese_create; i++)
         wait(NULL);
+
+    printf("Numarul proceselor create este: %d\n", nr_procese_create);
 
     return 0;    
 }

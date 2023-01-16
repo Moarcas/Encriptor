@@ -20,6 +20,12 @@
 
 void cripitareCuvant(char cuvant[], int lungime_cuvant)
 {
+    // Generez cheia
+
+    int key[lungime_cuvant];
+
+    generarePermutare(key, lungime_cuvant);
+
     // Criptez cuvantul
 
 }

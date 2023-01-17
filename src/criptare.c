@@ -12,13 +12,17 @@
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
+#include <sys/wait.h>
+#include <sys/mman.h>
+#include <sys/stat.h>        /* For mode constants */
+#include <fcntl.h>           /* For O_* constants */
 
 #include "../headers/pozitii.h"
 #include "../headers/generareCheie.h"
 
 #endif
 
-void cripitareCuvant(char cuvant[], int lungime_cuvant)
+void cripitareCuvant(char cuvant[], int lungime_cuvant, int nr_cuv)
 {
     // Generez cheia
 
@@ -27,6 +31,20 @@ void cripitareCuvant(char cuvant[], int lungime_cuvant)
     generarePermutare(key, lungime_cuvant);
 
     // Criptez cuvantul
+
+    char *cuvant_criptat = malloc((lungime_cuvant + 1) * sizeof(char));
+
+    for(int i = 0; i < lungime_cuvant; i++)
+    {
+        int index = key[i] % lungime_cuvant;
+        cuvant_criptat[i] = cuvant[index];
+    }
+
+    cuvant_criptat[lungime_cuvant] = '\0';
+    strcpy(cuvant, cuvant_criptat);
+    free(cuvant_criptat);
+
+    // Salvez cheia 
 
 }
 
@@ -41,13 +59,32 @@ int criptare(char **argv)
 
     if(fstat(fd, &sb) == -1)
     {
-        perror("Nu s-a putut obtine dimensiunea fisierului.\n");
+        perror("Nu s-a putut obtine dimensiunea fisierului de intrare.\n");
         return errno;
     }
 
     // Mapez fisierul de intrare in memorie
 
     char *file_in_memory = mmap(NULL, sb.st_size, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
+
+    // Deschid fisierul de permutari
+
+    int fd_permutari = open("permutari.txt", O_RDWR);
+    struct stat sb2;
+
+    if(fstat(fd_permutari, &sb2) == -1)
+    {
+        perror("Nu s-a putut obtine dimensiunea fisierului de permutari.\n");
+        return errno;
+    }
+
+    char* permutari = mmap(NULL, 1000, PROT_WRITE|PROT_READ, MAP_SHARED, fd_permutari, 0);
+
+    if(permutari == MAP_FAILED) {
+        perror(NULL);
+        shm_unlink("permutari.txt");
+        return errno;
+    }
 
     // Acum orice modificare fac in file_in_memory va aparea si in fisier
 
@@ -59,7 +96,6 @@ int criptare(char **argv)
     determinarePozitiiCuvinte(pozitii, file_in_memory, &numar_cuvinte);
 
     // Incep sa creez procesele
-
 
     for(int nr_cuv = 0; nr_cuv < numar_cuvinte; nr_cuv++)
     {
@@ -80,7 +116,7 @@ int criptare(char **argv)
 
             cuvant[lungime_cuvant] = '\0';
 
-            cripitareCuvant(cuvant, lungime_cuvant);
+            cripitareCuvant(cuvant, lungime_cuvant, nr_cuv);
 
             for(int i = 0; i < lungime_cuvant; i++)
                 file_in_memory[pozitie_start + i] = cuvant[i];
@@ -92,6 +128,8 @@ int criptare(char **argv)
 
     munmap(file_in_memory, sb.st_size);
     
+    for(int i = 0; i < numar_cuvinte; i++)
+        wait(NULL); 
 
     return 0;    
 }

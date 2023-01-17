@@ -1,1 +1,1 @@
-void decriptare(char **argv);
+int decriptare(char **argv);

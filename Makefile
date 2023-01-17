@@ -8,7 +8,8 @@ BINDIR = bin
 BIN = $(BINDIR)/main
 
 all:$(BIN)
-	./bin/main date.txt 
+	# ./bin/main date.txt
+	# ./bin/main date.txt permutari.txt
 
 $(BIN): $(OBJS)
 	$(CC) $(OBJS) $(CFLAGS) -o $@

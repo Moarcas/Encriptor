@@ -69,18 +69,24 @@ int criptare(char **argv)
 
     // Deschid fisierul de permutari
 
-    int fd_permutari = open("permutari.txt", O_RDWR);
-    struct stat sb2;
+    int fd_permutari = shm_open("permutari.txt", O_CREAT|O_RDWR, S_IRUSR|S_IWUSR);
 
-    if(fstat(fd_permutari, &sb2) == -1)
+    if(fd_permutari < 0)
     {
-        perror("Nu s-a putut obtine dimensiunea fisierului de permutari.\n");
+        perror(NULL);
+        return errno;
+    }
+    if(ftruncate(fd_permutari, 1000) == -1)
+    {
+        perror(NULL);
+        shm_unlink("permutari.txt");
         return errno;
     }
 
-    char* permutari = mmap(NULL, 1000, PROT_WRITE|PROT_READ, MAP_SHARED, fd_permutari, 0);
+    char *file_permutari = mmap(NULL, 1000, PROT_READ|PROT_WRITE, MAP_SHARED, fd_permutari, 0);
 
-    if(permutari == MAP_FAILED) {
+    if(file_permutari == MAP_FAILED) 
+    {
         perror(NULL);
         shm_unlink("permutari.txt");
         return errno;

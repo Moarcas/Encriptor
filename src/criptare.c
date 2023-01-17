@@ -51,17 +51,26 @@ void cripitareCuvant(char cuvant[], int lungime_cuvant, int nr_cuv, char* file_p
 
     pthread_mutex_lock(mutex);
 
-    // Pe prima pozitie pun numarul cuvantului, apoi cheia asociata acestuia
+    // // Pe prima pozitie pun numarul cuvantului, apoi cheia asociata acestuia
 
-    char numar[1000];
+    int length = snprintf(NULL, 0, "%d", nr_cuv);
+    char *numar = malloc(length + 1);
+    snprintf(numar, length + 1, "%d", nr_cuv);
+    strcat(file_permutari, numar);
+    free(numar);
 
-    sprintf(numar, "%d", nr_cuv);
-
-    
-
+    for(int i = 0; i < lungime_cuvant; i++)
+    {
+        length = snprintf(NULL, 0, "%d", key[i]);
+        numar = malloc(length + 1);
+        snprintf(numar, length + 1, "%d", key[i]);
+        strcat(file_permutari, " ");
+        strcat(file_permutari, numar);
+        free(numar);
+    }
+    strcat(file_permutari, "\n");
 
     pthread_mutex_unlock(mutex);
-    
 }
 
 int criptare(char **argv)
@@ -115,7 +124,7 @@ int criptare(char **argv)
 
     // Mapez mutexul
 
-    mutex = mmap(NULL, sizeof(mutex), PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANONYMOUS, -1, 0);
+    mutex = mmap(NULL, sizeof(pthread_mutex_t), PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANONYMOUS, -1, 0);
 
     pthread_mutex_init(mutex, NULL);
 
@@ -149,6 +158,9 @@ int criptare(char **argv)
         }
 
     }
+
+    pthread_mutex_destroy(mutex);
+    munmap(mutex, sizeof(pthread_mutex_t));
 
     munmap(file_in_memory, sb.st_size);
     

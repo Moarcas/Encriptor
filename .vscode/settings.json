@@ -4,6 +4,7 @@
         "pair.h": "c",
         "pozitii.h": "c",
         "criptare.h": "c",
-        "pereche.h": "c"
+        "pereche.h": "c",
+        "math.h": "c"
     }
 }

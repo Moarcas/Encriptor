@@ -16,13 +16,16 @@
 #include <sys/mman.h>
 #include <sys/stat.h>        /* For mode constants */
 #include <fcntl.h>           /* For O_* constants */
+#include <pthread.h>
 
 #include "../headers/pozitii.h"
 #include "../headers/generareCheie.h"
 
 #endif
 
-void cripitareCuvant(char cuvant[], int lungime_cuvant, int nr_cuv)
+pthread_mutex_t *mutex;
+
+void cripitareCuvant(char cuvant[], int lungime_cuvant, int nr_cuv, char* file_permutari)
 {
     // Generez cheia
 
@@ -46,6 +49,19 @@ void cripitareCuvant(char cuvant[], int lungime_cuvant, int nr_cuv)
 
     // Salvez cheia 
 
+    pthread_mutex_lock(mutex);
+
+    // Pe prima pozitie pun numarul cuvantului, apoi cheia asociata acestuia
+
+    char numar[1000];
+
+    sprintf(numar, "%d", nr_cuv);
+
+    
+
+
+    pthread_mutex_unlock(mutex);
+    
 }
 
 int criptare(char **argv)
@@ -69,29 +85,25 @@ int criptare(char **argv)
 
     // Deschid fisierul de permutari
 
-    int fd_permutari = shm_open("permutari.txt", O_CREAT|O_RDWR, S_IRUSR|S_IWUSR);
+    int fd_permutari = open("permutari.txt", O_RDWR);
 
     if(fd_permutari < 0)
     {
         perror(NULL);
         return errno;
     }
-    if(ftruncate(fd_permutari, 1000) == -1)
-    {
-        perror(NULL);
-        shm_unlink("permutari.txt");
-        return errno;
-    }
 
-    char *file_permutari = mmap(NULL, 1000, PROT_READ|PROT_WRITE, MAP_SHARED, fd_permutari, 0);
+    ftruncate(fd_permutari, 4096);
+
+    char *file_permutari = mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_SHARED, fd_permutari, 0);
 
     if(file_permutari == MAP_FAILED) 
     {
         perror(NULL);
-        shm_unlink("permutari.txt");
+        munmap(file_permutari, 10000);
         return errno;
     }
-
+    
     // Acum orice modificare fac in file_in_memory va aparea si in fisier
 
     struct pereche pozitii[100000];
@@ -100,6 +112,12 @@ int criptare(char **argv)
     // Pentru fiecare cuvant din fisier determin pozitia la care incepe si pozitia la care se termina
 
     determinarePozitiiCuvinte(pozitii, file_in_memory, &numar_cuvinte);
+
+    // Mapez mutexul
+
+    mutex = mmap(NULL, sizeof(mutex), PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANONYMOUS, -1, 0);
+
+    pthread_mutex_init(mutex, NULL);
 
     // Incep sa creez procesele
 
@@ -122,7 +140,7 @@ int criptare(char **argv)
 
             cuvant[lungime_cuvant] = '\0';
 
-            cripitareCuvant(cuvant, lungime_cuvant, nr_cuv);
+            cripitareCuvant(cuvant, lungime_cuvant, nr_cuv, file_permutari);
 
             for(int i = 0; i < lungime_cuvant; i++)
                 file_in_memory[pozitie_start + i] = cuvant[i];
@@ -137,5 +155,11 @@ int criptare(char **argv)
     for(int i = 0; i < numar_cuvinte; i++)
         wait(NULL); 
 
+    ftruncate(fd_permutari, strlen(file_permutari));
+    munmap(file_permutari, 4096);
+    close(fd_permutari);
+
     return 0;    
 }
+
+// sa inchid fisierele

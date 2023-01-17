@@ -8,3 +8,6 @@ va primi fisierul avand cuvintele criptate si permutarile folosite pentru cripta
 cuvintele decriptate
 
 Voi alege o permutare, fiecare proces va avea de prelucrat o parte din fisier, aplicand acea permutare pe partea lui de fisier
+
+Pentru criptare:    ./bin/main date.txt
+Pentru decrptare:   ./bin/main date.txt permutari.txt

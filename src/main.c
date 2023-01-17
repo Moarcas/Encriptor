@@ -13,17 +13,23 @@ int main(int argc, char *argv[])
     if(argc == 2)
     {
         // Ciptare
-        criptare(argv);
+        if(criptare(argv) == 1)
+            printf("Mesajul a fost criptat cu succes!\n");
+        else
+            printf("Eroare la criptarea mesajului!\n");
     }
     else if(argc == 3)
     {
         // Drecriptare
-        decriptare(argv);
+        if(decriptare(argv) == 1)
+            printf("Mesajul a fost decriptat cu succes!\n");
+        else
+            printf("Eroare la decriptarea mesajului!\n");
     }
     else
     {
         // Numarul argumentelor este gresit
-        printf("Programul primeste minim un argument si maxim doua argumente!");
+        printf("Programul primeste minim un argument si maxim doua argumente!\n");
     }
 
 

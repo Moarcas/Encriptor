@@ -75,8 +75,6 @@ void cripitareCuvant(char cuvant[], int lungime_cuvant, int nr_cuv, char* file_p
 
 int criptare(char **argv)
 {
-    printf("Sunt in sursa criptare!\n");
-
     // Deschid fisierul de intrare
 
     int fd = open(argv[1], O_RDWR);
@@ -171,7 +169,7 @@ int criptare(char **argv)
     munmap(file_permutari, 4096);
     close(fd_permutari);
 
-    return 0;    
+    return 1;    
 }
 
 // sa inchid fisierele

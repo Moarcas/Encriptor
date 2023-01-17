@@ -30,8 +30,6 @@ void decriptareCuvant(char cuvant[], int lungime_cuvant, int *permutare)
 
 int decriptare(char **argv)
 {
-    printf("Sunt in sursa decriptare!\n");
-
     // Deschid fisierul de intrare
 
     int fd = open(argv[1], O_RDWR);
@@ -139,5 +137,5 @@ int decriptare(char **argv)
 
     ftruncate(fd_permutari, 0);
 
-    return 0;
+    return 1;
 }
